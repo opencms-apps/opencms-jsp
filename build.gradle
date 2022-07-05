@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+}
+
+group 'com.timsdt.core'
+version '1.0'
+
+repositories {
+    mavenLocal()
+    if (project.hasProperty('additional_repositories')){
+        additional_repositories.split(';').each{ repo ->
+            maven { url repo }
+        }
+    }
+    mavenCentral()
+    maven {
+        url "http://software.rescarta.org/nexus/content/repositories/thirdparty/"
+        allowInsecureProtocol = true
+    }
+    maven {
+        url "https://maven.restlet.talend.com"
+    }
+    maven {
+        url "https://opencms-apps.github.io/missing-repo/"
+        allowInsecureProtocol = true
+    }
+    maven {
+        url "https://nexus.nuiton.org/nexus/content/groups/releases/"
+    }
+    maven {
+        url "http://maven.vaadin.com/vaadin-addons"
+        allowInsecureProtocol = true
+    }
+}
+
+dependencies {
+
+    implementation "org.opencms:opencms-core:${opencms_version}"
+    implementation "org.opencms:opencms-gradle-plugin:${opencms_gradle_version}"
+    implementation "com.fasterxml.jackson.core:jackson-core:2.13.3"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.3"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.13.3"
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+task finalRelease(type: Copy) {
+    from configurations.compileClasspath
+    into 'dependencies'
+}
